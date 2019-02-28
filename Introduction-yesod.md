@@ -1,6 +1,6 @@
 # Yesod primeros pasos
 
-###  Configuración ambiente de desarrollo
+##  Configuración ambiente de desarrollo
 
 
  1) Ejecutar en la terminal los siguientes comandos
@@ -39,9 +39,11 @@
 	    stack exec -- cabal update //Actualizar dependencias
         
         
-###  Acciones basicas
+##  Acciones basicas
 
-1) Luego de generar el proyecto y compilarlo podemos ingresar a la ruta http://localhost:3000 para verificar el proyecto generado.
+###  models
+
+Luego de generar el proyecto y compilarlo podemos ingresar a la ruta http://localhost:3000 para verificar el proyecto generado.
 
 A continuación ingresamos en `my-proyect\config\models`. En este archivo permite crear dos cosas por un lado las tablas (del motor de base de datos seleccionado) de nuestro proyecto y por otro las entidades de dominio sobre las cuales podemos acceder y manipular dichas tablas. 
 
@@ -51,6 +53,25 @@ Como ejemplo vamos a definir una nueva tabla de prueba
         fieldOne Text 
         fieldTwo Int
         fieldThree Bool
+	
+Al ingresarlo si compilamos nuevamente nuestro proyecto (oprimir cualquier tecla en el terminal) recibiremos un input similar al siguiente:
+
+	Migrating: CREATE TABLE "demo"("id" INTEGER PRIMARY KEY,"field_one" VARCHAR NOT NULL,"field_two" INTEGER NOT NULL,"field_three" BOOLEAN NOT NULL)
+	Devel application launched: http://localhost:3000
+	
+Una de las grandes ventajas de `Persistent` el ORM aplicado en Yesod es la autogeneración de migraciones basado en cambios sobre el archivo `modeles` sin requerir (en principio) realizar querys a mano
+
+
+###  routes
+
+Las rutas se definen en `my-proyect\config\routes`. Una ruta se compone por: /pathDeLaRuta NombreRecurso HTTP-METODOS. Como ejemplo podemos definir la siguiente ruta
+
+	/demoNew DemoNewR GET POST
+
+donde `demoNew` es el path para acceder desde la url `DemoNewR` es el constructor para el tipo de dato asociado a la URL (urls de tipo seguro). Por convención estas siempre inician con letra mayuscula y terminana con un `R` mayuscula. `GET POST` son los servicios REST que se implementaran para esa ruta en especifico
+
+###  Handlers
+
 
 
 
