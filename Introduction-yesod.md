@@ -3,4 +3,6 @@ PROGRAMACION FUNCIONAL PARA INGENIEROS
 YESOD CONECPTOS BASICOS 
 2019-03 
 
-*Objetivo:* Desarrollar una aplicación web en Yesod  
+*Objetivo:* Conocer conceptos básicos del framework Yesod
+
+##configurar ambiente de desarrollo
