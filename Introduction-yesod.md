@@ -54,7 +54,7 @@ Como ejemplo vamos a definir una nueva tabla de prueba
         fieldTwo Int
         fieldThree Bool
 	
-Al ingresarlo si compilamos nuevamente nuestro proyecto (oprimir cualquier tecla en el terminal) recibiremos un input similar al siguiente:
+Al ingresarlo si compilamos nuevamente nuestro proyecto (enter en el terminal) recibiremos un input similar al siguiente:
 
 	Migrating: CREATE TABLE "demo"("id" INTEGER PRIMARY KEY,"field_one" VARCHAR NOT NULL,"field_two" INTEGER NOT NULL,"field_three" BOOLEAN NOT NULL)
 	Devel application launched: http://localhost:3000
@@ -72,6 +72,80 @@ donde `demoNew` es el path para acceder desde la url `DemoNewR` es el constructo
 
 ###  Handlers
 
+1) Las capas de controller, service, repository en Yesod están por defecto encapsuladas en los Handlers. Para definir los servicios que declaramos en las rutas vamos a crear un nuevo handler `Demo.hs` dentro del directorio `src\Handler`
 
+Adicionalmente es necesario especificar el handler que creamos en los archivos `my-proyect.cabal` e imporarlos en `src\Appication.hs`
+
+2) definimos los import basicos dentro de nuestro handler incluyendo sus extenciones 
+
+		{-# LANGUAGE NoImplicitPrelude #-}
+		{-# LANGUAGE OverloadedStrings #-}
+		{-# LANGUAGE TemplateHaskell #-}
+		{-# LANGUAGE MultiParamTypeClasses #-}
+		{-# LANGUAGE TypeFamilies #-}
+		module Handler.Demo where
+
+		import Import
+		import Yesod.Form.Bootstrap3 (BootstrapFormLayout (..), renderBootstrap3)
+		
+
+###  Forms
+
+Existen tres tipos de formas en Yesod se utilizan para interactuar con los forms desde el lado del front y mapear la data a tipos definidos. Para este ejemplo usaremos una forma aplicativa como se muestra a continuación 
+
+	--Aform From Entity Demo
+	demoForm :: Maybe Demo -> AForm Handler Demo
+	demoForm   demo = Demo 
+			<$> areq textField "fieldone" (demoFieldOne <$> demo)
+			<*> areq intField "fieldTwo" (demoFieldTwo <$> demo) 
+			<*> areq boolField "fieldThree" (demoFieldThree <$> demo) 
+
+### Shakespearean Templates
+
+Shakespearean es otro de los DLS definidos en Yesod. Ofrece una sintaxis muy similiar a la de HTML pero ofrece funciones adicionales para manipular facilmente la data que se procesa en los handlers. Vamos a definir un formulario en el cual podamos capturar la data necesario para construir un `Demo` 
+
+
+	<div .container>
+	    <form method=post action=@{actionR} encType=#{encoding}>
+		 <div .row>
+		     ^{widget}   
+		    <div .row .clearfix .visible-xs-block>
+		    <button .btn .btn-success> 
+		       <span .glyphicon .glyphicon-floppy-saved>
+		       default text create
+
+Guardamos este archivo como `DemoCreate.hamlet` en `static/template/Demo` 
+
+## Servicios
+
+Acorde a lo que especificamos en la ruta debemos especificar los servicios de GET y POST para la entidad creada
+
+	--CRUD 
+	--Create
+	getDemoNewR ::  Handler Html 
+	getDemoNewR = do
+		   (widget, encoding) <- generateFormPost $ renderBootstrap3 BootstrapBasicForm $ demoForm Nothing
+		   defaultLayout $ do
+			let actionR = DemoNewR                          
+			$(widgetFile "Demo/DemoCreate")
+
+	postDemoNewR :: Handler Html
+	postDemoNewR = do
+			((result,widget), encoding) <- runFormPost $ renderBootstrap3 BootstrapBasicForm $ demoForm  Nothing
+			case result of
+			     FormSuccess demo -> do 
+					 _ <- runDB $ insert demo
+					 redirect DemoListR
+			     _ -> defaultLayout $ do 
+			     let actionR = DemoNewR
+			     $(widgetFile "Demo/DemoCreate")
+			    			     
+Con lo anterior si compilamos nuevamente nuestro proyecto y navegamos hasta http://localhost:3000/demoNew recibiremos el siguiente mensaje
+
+	src/Foundation.hs:(163,5)-(172,45): Non-exhaustive patterns in function isAuthorized
+	
+Esto se debe a que por defecto el scaffolding de Yesod incluye un sistema de autorización para las rutas. Para solucionar esto vamos al archivo `src/Foundation.hs` y modificamos como se muestra a continuación 
+
+    isAuthorized DemoNewR  _ = return Authorized
 
 
