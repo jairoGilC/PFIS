@@ -116,7 +116,7 @@ Shakespearean es otro de los DLS definidos en Yesod. Ofrece una sintaxis muy sim
 
 Guardamos este archivo como `DemoCreate.hamlet` en `static/template/Demo` 
 
-## Servicios
+### Servicios
 
 Acorde a lo que especificamos en la ruta debemos especificar los servicios de GET y POST para la entidad creada
 
@@ -148,4 +148,16 @@ Esto se debe a que por defecto el scaffolding de Yesod incluye un sistema de aut
 
     isAuthorized DemoNewR  _ = return Authorized
 
+### SqLite
 
+Como prueba final para ver la data insertada podemos entrar a sqlite. Para ello dentro del directorio del proyecto ejecutamos
+
+	sqlite3
+	
+Al ingresar cargamos el archivo generado
+
+	.open my-proyect.sqlite3
+	
+Para verificar la data ingresada
+
+	SELECT * FROM demo;
