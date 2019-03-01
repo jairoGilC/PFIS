@@ -120,25 +120,25 @@ Guardamos este archivo como `DemoCreate.hamlet` en `static/template/Demo`
 
 Acorde a lo que especificamos en la ruta debemos especificar los servicios de GET y POST para la entidad creada
 
-	--CRUD 
-	--Create
-	getDemoNewR ::  Handler Html 
-	getDemoNewR = do
-		   (widget, encoding) <- generateFormPost $ renderBootstrap3 BootstrapBasicForm $ demoForm Nothing
-		   defaultLayout $ do
-			let actionR = DemoNewR                          
-			$(widgetFile "Demo/DemoCreate")
+--CRUD 
+--Create
+getDemoNewR ::  Handler Html 
+getDemoNewR = do
+           (widget, encoding) <- generateFormPost $ renderBootstrap3 BootstrapBasicForm $ demoForm Nothing
+           defaultLayout $ do
+                let actionR = DemoNewR
+                $(widgetFile "Demo/DemoCreate")
 
-	postDemoNewR :: Handler Html
-	postDemoNewR = do
-			((result,widget), encoding) <- runFormPost $ renderBootstrap3 BootstrapBasicForm $ demoForm  Nothing
-			case result of
-			     FormSuccess demo -> do 
-					 _ <- runDB $ insert demo
-					 redirect DemoListR
-			     _ -> defaultLayout $ do 
-			     let actionR = DemoNewR
-			     $(widgetFile "Demo/DemoCreate")
+postDemoNewR :: Handler Html
+postDemoNewR = do
+                ((result,widget), encoding) <- runFormPost $ renderBootstrap3 BootstrapBasicForm $ demoForm  Nothing
+                case result of
+                     FormSuccess demo -> do 
+                                 _ <- runDB $ insert demo
+                                 redirect HomeR
+                     _ -> defaultLayout $ do 
+                        let actionR = DemoNewR
+                        $(widgetFile "Demo/DemoCreate")
 			    			     
 Con lo anterior si compilamos nuevamente nuestro proyecto y navegamos hasta http://localhost:3000/demoNew recibiremos el siguiente mensaje
 
