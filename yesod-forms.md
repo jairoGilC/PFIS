@@ -134,4 +134,4 @@ existen varias formas de ejecutar formas. Sin embargo nos vamos a concentrar en 
   ## Ejercicio 
 
 
-![test](https://www.fibes.es/wp-content/uploads/2018/08/MTG_Primary_LL_2c_Black_LG_V12.png2)
+![ ](https://i.pinimg.com/originals/83/c4/cb/83c4cb42bd400eb585c3ce03b582ef99.png)
