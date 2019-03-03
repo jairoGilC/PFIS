@@ -96,12 +96,35 @@ Existen dos funciones muy utiles `selectFieldList` `radioField` para hacer lista
         <$> areq textField "Model" (carModel <$> mcar)
         <*> areq carYearField "Year" (carYear <$> mcar)
         <*> aopt (selectFieldList colors) "Color" (carColor <$> mcar)
-      where
-        colors :: [(Text, Color)]
-        colors = [("Red", Red), ("Blue", Blue), ("Gray", Gray), ("Black", Black)]
-        
       where colors :: Handler (OptionList CityId)
             colors = do
                entities <- runDB $ selectList [] [Asc ColorName]
                optionsPairs $ colorPair <$> entities
             colorPair color = (cityName $ entityVal color, entityKey color)
+            
+### Ejecutando formas
+
+existen varias formas de ejecutar formas. Sin embargo nos vamos a concentrar en dos en particular 
+
+`generateFormPost` Genera el HTML para mostrar el formulario
+
+`runFormPost` Permite ejecutar el formulario para enviar los parametros
+
+    getDemoNewR ::  Handler Html 
+    getDemoNewR = do
+               (widget, encoding) <- generateFormPost $ renderBootstrap3 BootstrapBasicForm $ demoForm Nothing
+               defaultLayout $ do
+                    let actionR = DemoNewR
+                    $(widgetFile "Demo/DemoCreate")
+
+    postDemoNewR :: Handler Html
+    postDemoNewR = do
+                    ((result,widget), encoding) <- runFormPost $ renderBootstrap3 BootstrapBasicForm $ demoForm  Nothing
+                    case result of
+                         FormSuccess demo -> do 
+                                     _ <- runDB $ insert demo
+                                     redirect HomeR
+                         _ -> defaultLayout $ do 
+                            let actionR = DemoNewR
+                            $(widgetFile "Demo/DemoCreate")
+  
