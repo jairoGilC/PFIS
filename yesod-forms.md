@@ -74,3 +74,34 @@ La principal diferencia entre `check` y `checkM` es que este ultimo permite perm
         let today = utctDay now
         let (year, _, _) = toGregorian today
         return $ fromInteger year
+        
+### Selectores
+
+Existen dos funciones muy utiles `selectFieldList` `radioField` para hacer listas y radio buttons segun se requiera. En cualquier caso su uso se explica en el siguiente ejemplo
+
+**Nota:** Este ejemplo trae la data a mostrar directamente de base de datos. Sin embargo no es mandatorio. Un ejemplo alternativo mucho mas simble se puede encontrar e  [YesodBook](https://www.yesodweb.com/book/forms#forms_more_sophisticated_fields)
+
+    carAForm :: Maybe Car -> AForm Handler Car
+    carAForm mcar = Car
+        <$> areq textField "Model" (carModel <$> mcar)
+        <*> areq carYearField "Year" (carYear <$> mcar)
+        <*> aopt (selectFieldList colors) "Color" (carColor <$> mcar)
+      where
+        colors :: [(Text, Color)]
+        colors = [("Red", Red), ("Blue", Blue), ("Gray", Gray), ("Black", Black)]
+        
+---
+    carAForm :: Maybe Car -> AForm Handler Car
+    carAForm mcar = Car
+        <$> areq textField "Model" (carModel <$> mcar)
+        <*> areq carYearField "Year" (carYear <$> mcar)
+        <*> aopt (selectFieldList colors) "Color" (carColor <$> mcar)
+      where
+        colors :: [(Text, Color)]
+        colors = [("Red", Red), ("Blue", Blue), ("Gray", Gray), ("Black", Black)]
+        
+      where colors :: Handler (OptionList CityId)
+            colors = do
+               entities <- runDB $ selectList [] [Asc ColorName]
+               optionsPairs $ colorPair <$> entities
+            colorPair color = (cityName $ entityVal color, entityKey color)
