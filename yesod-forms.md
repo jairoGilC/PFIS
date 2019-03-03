@@ -128,3 +128,10 @@ existen varias formas de ejecutar formas. Sin embargo nos vamos a concentrar en 
                             let actionR = DemoNewR
                             $(widgetFile "Demo/DemoCreate")
   
+  ### Parametros de forma
+  
+  
+  ## Ejercicio 
+
+
+![test](https://www.fibes.es/wp-content/uploads/2018/08/MTG_Primary_LL_2c_Black_LG_V12.png2)
