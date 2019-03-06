@@ -130,10 +130,34 @@ existen varias formas de ejecutar formas. Sin embargo nos vamos a concentrar en 
   
   ### Parametros de forma
   
+Existen ciertos atributos de una entidad que no necesariamente deben venir del usuario, por ejemplo el id del usuario, para estos casos una forma puede recibir uno o mas parámetros.
+
+    carAForm :: UserId ->  Maybe Car -> AForm Handler Car
+    carAForm uid mcar = Car
+        <$> areq textField    "Model" (carModel <$> mcar)
+        <*> areq carYearField "Year"  (carYear  <$> mcar)
+        <*> aopt textField    "Color" (carColor <$> mcar)
+        <*> pure uid
+        
+  ### Apendice
+  
+  Relaciones foráneas en Persistence
+  
+    Question
+        questionText Text
+        exam         ExamId 
+    Exam
+        name Text
+        description Text
   
   ## Ejercicio 
-
 
 ![ ](https://i.pinimg.com/originals/83/c4/cb/83c4cb42bd400eb585c3ce03b582ef99.png)
 
 
+Basado en el ejerció realizado anteriormente para construir un juego de cartas tipo TCG (Magic – Yu-Gi-Oh - hearthstone) construir un aplicativo web en Yesod que permita a los jugadores construir mazos.
+
+Tenga en cuenta que:
+
+* Los campos deben tener su correspondiente validación para garantizar que no se creen cartas que no tengan sentido (de un tipo invalido, atributo inválidos…)
+* Debe construir un modelo de datos consistente que aplique para el sistema diseñado en el ejercicio anterior
