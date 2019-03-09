@@ -192,3 +192,27 @@ En el siguiente [Enlace](https://github.com/yesodweb/persistent/edit/master/docs
      data Employment = Employed | Unemployed | Retired
         deriving (Show, Read, Eq)
     derivePersistField "Employment"
+
+## RawSQL
+
+RawSQL es una alternativa que permite realizar query nativo de SQL es particularmente útil cuando se quiere resolver el problema de realizar JOINS entre tablas que no es soportado por Persistent. Su defecto es que no emplea tipos seguros con lo cual podremos encontrar errores en tiempo de ejecución sin mencionar lo críptico de los mensajes que podríamos obtener. En cualquier caso, es una alternativa necesaria en múltiples circunstancias.
+
+    Author
+        name Text
+    Blog
+        author AuthorId
+        title Text
+        content Html
+---
+    getExampleR :: Handler Html
+    getExampleR = do
+        blogs <- runDB $ rawSql
+            "SELECT ??, ?? \
+            \FROM blog INNER JOIN author \
+            \ON blog.author=author.id"
+            []
+        
+        
+# Ejercicio
+
+Basado en el ejercicio anterior de cartas. Realizar un buscardo de cartas que permita encontrar cartas basado en cualquier atrbutoincluyendo la desripción de la carta.
