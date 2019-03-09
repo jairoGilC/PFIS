@@ -33,25 +33,21 @@ Por defecto los atributos definidos son `NOTNULL` podemos usar el tipo `Maybe` p
 
 >exam ExamId
 
-//OJO AQUI EXPLICAR EL MANEJO DE LLAVES FORANEAS EN PERSISTENCE
+Estable una relación foránea entre ambas entidades. La gran ventaja de Persistent comparada con otros ORM es que las relaciones son de tipo seguro de la misma manera que los identificadores de tal modo que si intentamos por ejemplo obtener un elemento `get` con un índice de una entidad que no corresponda el programa fallara en compilación 
 
 ### Tipos de datos disponibles para los atributos
 
-    data PersistValue
-        = PersistText Text
-        | PersistByteString ByteString
-        | PersistInt64 Int64
-        | PersistDouble Double
-        | PersistRational Rational
-        | PersistBool Bool
-        | PersistDay Day
-        | PersistTimeOfDay TimeOfDay
-        | PersistUTCTime UTCTime
-        | PersistNull
-        | PersistList [PersistValue]
-        | PersistMap [(Text, PersistValue)]
-        | PersistObjectId ByteString
-        | PersistDbSpecific ByteString
+Haskell	   |   PostgreSQL         |  MySQL            |  MongoDB      |  SQLite
+-----------|----------------------|-------------------|---------------|---------
+Text	   |  VARCHAR             |  TEXT             | String        |  VARCHAR
+ByteString |  BYTEA               |  BLOB             | BinData       |  BLOB
+Int        |  INT8                |  BIGINT(20)       | NumberLong    |  INTEGER
+Double     |  DOUBLE PRECISION    |  DOUBLE           | Double        |  REAL
+Rational   |  NUMERIC(22, 12)     |  DECIMAL(32,20)   | *Unsupported* |  NUMERIC(32,20)
+Bool       |  BOOLEAN             |  TINYINT(1)       | Boolean       |  BOOLEAN
+Day        |  DATE                |  DATE             | NumberLong    |  DATE
+TimeOfDay  |  TIME                |  TIME\*\*         | *Unsupported* |  TIME
+UTCTime\*  |  TIMESTAMP           |  DATETIME\*\*     | Date          |  TIMESTAMP
         
 ### Persistent typeclass
 
@@ -179,4 +175,20 @@ Antes de exponer las operaciones disponibles para la manipulación de datos es i
         
 ## Atributos
 
-//OJO : trying to load up a different entity (like House) using a PersonId will never compile.
+Cualquier campo en Persisten se compone como lo hemos visto hasta el momento de, un nombre un tipo y una lista de atributos. Ahora vamos a ver en detalle la lista de atributos  
+
+En el siguiente [Enlace](https://github.com/yesodweb/persistent/edit/master/docs/Persistent-entity-syntax.md) se encuentra disponbiel la lista completa de atributos que podemos incluir en cualquier campo.
+
+
+## Campos personalizados 
+
+**Nota:** No es una buena práctica utilizar campos enumerables pues representan lógica de negocio oculta a nivel de base de datos. Sin embargo, gracias al sistema de tipos seguros que Persistent emplea esto no se aplica ya que el enumerable está definido y controlado a nivel de aplicación 
+
+     Person
+        name String
+        employment Employment
+        
+-----
+     data Employment = Employed | Unemployed | Retired
+        deriving (Show, Read, Eq)
+    derivePersistField "Employment"
