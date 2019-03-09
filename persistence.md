@@ -122,9 +122,15 @@ Inician con letra mayuscula pues son un constructor de datos. Es posible reaizar
 
 La lista de operadores disponibles y su equivalente en SQL son:
 
-| Operador      | Equivalente   | Ejemplo | Notas |
-| ------------- | ------------- |-------------| |------------- |
-| _             | AND           | [PersonAge >. 25, PersonAge <=. 30] |Cada operación en la lista se relacióna con un `AND` por lo tanto no existe un operado para el `AND` |
+| Operador      | Equivalente   | Ejemplo     |  Notas       |
+| ------------- | ------------- |-------------|------------- |
+|               | AND           | `[PersonAge >. 25, PersonAge <=. 30]` |Cada operación en la lista se relacióna con un `AND` por lo tanto no existe un operador especifico para el `AND` |
+| `.\|\|`         | OR            | `([PersonAge >. 25] \|\|. [PersonAge <=. 30])` | |
+| `/<-.`          | IN            | `[PersonFirstName /<-. ["Adam", "Bonny"]` | |
+| `<-.`           | IN            | `[PersonFirstName /<-. ["Adam", "Bonny"]` | |
+| `/<-.`          | NOT IN        | `[PersonFirstName /<-. ["Adam", "Bonny"]` | |
+| `>.`, `>=.` `<=.`, `<=.`        |> >= < <=       | `[PersonAge >. 25]` | |
+
 
 
 
