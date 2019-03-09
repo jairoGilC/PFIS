@@ -135,15 +135,48 @@ La lista de operadores disponibles y su equivalente en SQL son:
 
 El segundo parametro de los selectores en una lista de opciones, las cueales pueden ser:
 
-| Operador      | Equivalente   | Ejemplo     |  
+| función       | Equivalente   | Ejemplo     |  
 | ------------- | ------------- |-------------|
+| `Asc`         | ASC           | `[Asc PersonLastName]` |
+| `Desc`        | DESC          | `[Desc PersonLastName]` |
+| `LimitTo`     | LIMIT         | `[LimitTo 100]` |
+| `OffsetBy`    | OFFSET        | `[OffsetBy $ (pageNumber - 1) * resultsPerPage]` |
 
-| `Asc`         | ASC         | `[Asc PersonLastName]` |
-| `Desc`        | DESC        | `[Desc PersonLastName]` |
-| `LimitTo`     | LIMIT       | `[LimitTo 100]` |
-| `OffsetBy`    | OFFSET      | `[OffsetBy $ (pageNumber - 1) * resultsPerPage]` |
+### Manipulación de datos
 
+Antes de exponer las operaciones disponibles para la manipulación de datos es importante aclar que en el contexto de Persistent los identificadores están separados de los tipos concretos. Esto es así por practicidad en las operaciones de Insert (al momento de inserta el ID no existe y deberían definirse los id de las entidades como `Maybe` para poder realizar la función de insert) 
 
+* `insert`: inserta un nuevo registro
 
+        personId <- insert $ Person "Michael" "Snoyman" 26
+
+* `update` recibe un identificador una lista de parametros a modificar y modifica dichos parametros, las operaciones disponibles para este segundo parametro son: `+=.`, `-=.`, `*=.`, `/=.`, `=.`
+
+        personId <- insert $ Person "Michael" "Snoyman" 26
+        update personId [PersonAge =. 27]
+        
+* `updateWhere` similar a `update` pero recibe una lista adicional de condiciones para ejectar el update en lugar de un identificador
+
+        updateWhere [PersonFirstName ==. "Michael"] [PersonAge *=. 2]
+
+* `replace` recibe un identificar un tipo concreto y remplaza cada valor por el nuevo tipo
+
+        personId <- insert $ Person "Michael" "Snoyman" 26
+        replace personId $ Person "John" "Doe" 20
+        
+* `delete` Borrado por Id
+
+        personId <- insert $ Person "Michael" "Snoyman" 26
+        delete personId
+        
+* `deleteBy` Borrado por constraints
+
+        deleteBy $ PersonName "Michael" "Snoyman"
+
+* `deleteWhere` Borrado basado en condiciones
+
+        deleteWhere [PersonFirstName ==. "Michael"]
+        
+## Atributos
 
 //OJO : trying to load up a different entity (like House) using a PersonId will never compile.
