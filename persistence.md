@@ -216,3 +216,25 @@ RawSQL es una alternativa que permite realizar query nativo de SQL es particular
 # Ejercicio
 
 Basado en el ejercicio anterior de cartas. Realizar un buscardo de cartas que permita encontrar cartas basado en cualquier atrbutoincluyendo la desripción de la carta.
+
+
+## Apendice
+
+    getDemoSearchR ::  Handler Html 
+    getDemoSearchR = do
+               (widget, encoding) <- generateFormPost $ renderBootstrap3 BootstrapBasicForm $ demoForm Nothing
+               defaultLayout $ do
+                    let actionR = DemoSearchR
+                    $(widgetFile "Demo/DemoSearch")
+
+    postDemoSearchR :: Handler Html
+    postDemoSearchR = do
+                    ((result,widget), encoding) <- runFormPost $ renderBootstrap3 BootstrapBasicForm $ demoForm  Nothing
+                    case result of
+                         FormSuccess _ -> do 
+                                     demos <- runDB $ selectList [] []
+                                     defaultLayout $ do
+                                        $(widgetFile "Demo/DemoList")
+                         _ -> defaultLayout $ do 
+                            let actionR = DemoSearchR
+                            $(widgetFile "Demo/DemoCreate")
