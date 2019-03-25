@@ -9,6 +9,8 @@ Al momento de crear las credenciales es importante tener en cuenta:
 1) En la pestaña credenciales *credencials* Seleccionamos el Id que vamos a usar de la lista *OAuth 2.0 client IDs* seleccionamos editar y en la opción *Authorized redirect URIs* añadimos la ruta de nuestro proyecto `http://localhost:3000/auth/page/google/callback`
 2) En la pestaña *dashboard* en la parte superior seleccionamos *Enable Google+ API*
 
+## Autenticación
+
 ### Importación de librerias
 
 en `stack.yaml`
@@ -42,3 +44,12 @@ en `Foundation.hs` añadir las credenciales de Goodle Auth, ademas ajustar la in
       
       authPlugins :: App -> [AuthPlugin App]
       authPlugins app = [oauth2GoogleScoped ["email", "profile"] clientId clientSecret]
+      
+Al cargar el proyeto si ingresamos en Login comprobamos la unica opción de login disponible es `Login via google` si realizamos el proceso de login podemos ver ademas que se crea un nuevo usario asociado a la cuenta de google usada para autenticarse.
+
+
+## Autorización
+
+La autorización eta determinada por los permisos que debe tener un usuario para poder realizar una acción especifica. Para lograrlo vamos a definir los permisos disponibles dentro de nuestra aplicación. Para ello ingresamos en `src/Models.hs` y definimos la clase que usaremos para definir nuestros permisos 
+
+
