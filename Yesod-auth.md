@@ -53,3 +53,53 @@ Al cargar el proyeto si ingresamos en Login comprobamos la unica opción de logi
 La autorización eta determinada por los permisos que debe tener un usuario para poder realizar una acción especifica. Para lograrlo vamos a definir los permisos disponibles dentro de nuestra aplicación. Para ello ingresamos en `src/Models.hs` y definimos la clase que usaremos para definir nuestros permisos 
 
 
+    data Privileges =
+      PrvDemoOne         -- ^ what can be demo one...
+      | PrvDemoTwo       -- ^ what can be demo two...
+      deriving (Show,Read,Eq)
+
+    derivePersistField "Privileges"
+    
+A continuación debemos ajustar la entidad de usuario a fin de poder definir los privilegios que un usuario tiene en la aplicación.
+
+
+    User
+        ident Text
+        password Text Maybe
+        UniqueUser ident
+        perms [Privileges]
+        deriving Typeable
+        
+Adicionalmente será necesario ajustar el archivo `Foundation.hs` para añadir el nuevo atributo al momento de crear el usuario 
+
+    --Esta funcion ya existe en Foundation.hs simplemente hace falta añadir el nuevo atributo dentro la sintaxis de registro
+    authenticate creds = liftHandler $ runDB $ do
+        x <- getBy $ UniqueUser $ credsIdent creds
+        case x of
+            Just (Entity uid _) -> return $ Authenticated uid
+            Nothing -> Authenticated <$> insert User
+                { userIdent = credsIdent creds
+                , userPassword = Nothing
+                , userPerms = [] --New required line
+                }
+                
+*Nota:* En caso de ya tener usuarios en la aplicación la migración para crear el nuevo campo puede generar errores, lo más practico es borrar todos los registros de la tabla `user` manualmente 
+
+Finalmente, al igual que la función `isAuthenticated` debemos definir una función que nos ayude a validar si el usuario tiene o no los permisos suficientes para acceder a la ruta especificada. Para ello definimos la función `authorizedForPrivileges`
+
+
+    authorizedForPrivileges :: [Privileges] -> Handler AuthResult
+    authorizedForPrivileges perms = do
+        mu <- maybeAuth
+        return $ case mu of
+         Nothing -> Unauthorized "You must login to access this page"
+         Just u@(Entity userId user) ->
+           if hasPrivileges u perms
+                then Authorized
+                else Unauthorized "Not enought priviledges"
+
+Modificamos la autenticación de cualquiera de las rutas de nuestro aplicativo pasando como parametro la lista de privilegios requeridos para acceder:
+
+        isAuthorized (DemoJsonR _) _ = authorizedForPrivileges [PrvDemoOne]
+
+
