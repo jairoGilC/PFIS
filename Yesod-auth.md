@@ -103,3 +103,9 @@ Modificamos la autenticación de cualquiera de las rutas de nuestro aplicativo p
         isAuthorized (DemoJsonR _) _ = authorizedForPrivileges [PrvDemoOne]
 
 
+## Ejercicio
+
+Basado en el ejerció realizado anteriormente para construir un juego de cartas tipo TCG (Magic – Yu-Gi-Oh - hearthstone) construir definir autenticación y autorización para todas las rutas de la aplicación de tal modo que:
+
+* Ninguna ruta diferente al home este disponible sin autenticación.
+* Solo usuarios Admin pueden crear cartas. Pero cualquier usuario puede listarlas
