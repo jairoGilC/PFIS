@@ -109,4 +109,3 @@ Basado en el ejerció realizado anteriormente para construir un juego de cartas 
 
 * Ninguna ruta diferente al home este disponible sin autenticación.
 * Solo usuarios Admin pueden crear cartas. Pero cualquier usuario puede listarlas
-* Defina una pantalla administrdor que permita añadir o remover permisos a un usuario
